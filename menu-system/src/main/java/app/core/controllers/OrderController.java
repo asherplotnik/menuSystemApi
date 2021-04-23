@@ -1,5 +1,7 @@
 package app.core.controllers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import app.core.entities.Dish;
 import app.core.entities.MenuOrder;
+import app.core.enums.Category;
 import app.core.exceptions.MenuException;
 import app.core.security.JwtUtil;
 import app.core.services.OrderService;
@@ -46,8 +49,22 @@ public class OrderController {
 		} catch (MenuException e) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getLocalizedMessage());
 		}
-
 	}
+	
+	@GetMapping("/getCategories")
+	public List<String> getCategories() {
+		try {
+			List<String> categories = new ArrayList<>();
+			Arrays.asList(Category.values())
+			  .forEach(val -> categories.add(val.toString()));
+			return categories;
+		} catch (Exception e) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getLocalizedMessage());
+		}
+		
+	}
+	
+	
 
 	@PostMapping("/makeOrder")
 	public MenuOrder makeOrder(@RequestHeader String token, @RequestBody OrderPayload orderPayload) {

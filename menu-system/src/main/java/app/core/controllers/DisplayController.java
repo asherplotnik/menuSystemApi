@@ -46,20 +46,12 @@ public class DisplayController {
 	@GetMapping("/getOpenOrders")
 	public List<MenuOrder> getOpenOrders(@RequestHeader String token) {
 		try {
-			return getService(token,Level.SERVICE).getOrdersByStatus(Status.ORDERED);
+			return getService(token,Level.KITCHEN).getOrdersByStatus(Status.ORDERED);
 		} catch (MenuException e) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getLocalizedMessage());
 		}
 	}
 	
-	@GetMapping("/getOpenOrdersTest")
-	public List<MenuOrder> getOpenOrders() {
-		try {
-			return orderService.getOrdersByStatus(Status.ORDERED);
-		} catch (MenuException e) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getLocalizedMessage());
-		}
-	}
 	
 	@PostMapping("/updateEntryStatus/{entryId}")
 	public LocalDateTime updateOrderEntry(@RequestHeader String token, @PathVariable int entryId) {

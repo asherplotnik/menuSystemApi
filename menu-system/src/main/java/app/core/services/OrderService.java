@@ -56,6 +56,7 @@ public class OrderService {
 					throw new MenuException("save order failed - invalid table number!!!");
 				}
 			} else {
+				System.out.println(curr.getId());
 				if (curr.getId() < numberOfTables) {
 					throw new MenuException("save order failed - invalid customer id number!!!");
 				}
