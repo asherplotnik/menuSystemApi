@@ -1,8 +1,9 @@
 package app.core;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import app.core.services.CreateDatabaseService;
@@ -14,9 +15,17 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class CreateDatabaseApp {
 	
 	public static void main(String[] args) {
-		ConfigurableApplicationContext ctx = SpringApplication.run(CreateDatabaseApp.class, args);
-		CreateDatabaseService cds = ctx.getBean(CreateDatabaseService.class);
-		cds.createDatabase();
-		
+		SpringApplication.run(CreateDatabaseApp.class, args);
 	}
-}
+		//@Bean
+		CommandLineRunner initDBWithData(CreateDatabaseService cds) {
+			CommandLineRunner runner = new CommandLineRunner() {
+				@Override
+				public void run(String... args) throws Exception {
+					cds.createDatabase();
+				}
+			};
+			return runner;
+		}
+	}
+

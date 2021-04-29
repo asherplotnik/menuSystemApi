@@ -1,4 +1,4 @@
-package app.core.securirty;
+package app.core.security;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;

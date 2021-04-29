@@ -24,6 +24,7 @@ public class Dish {
 	@Column(length = 500)
 	private String description;
 	private double price;
+	private boolean available = true;
 	private String primaryImage;
 	private String secondaryImage;
 	private Category category;
@@ -38,22 +39,24 @@ public class Dish {
 		this.id = id;
 	}
 	
-	public Dish(String name, String description, double price, String primaryImage, String secondaryImage,
+	public Dish(String name, String description, double price, boolean available, String primaryImage, String secondaryImage,
 			Category category) {
 		this.name = name;
 		this.description = description;
 		this.price = price;
+		this.available = available;
 		this.primaryImage = primaryImage;
 		this.secondaryImage = secondaryImage;
 		this.category = category;
 	}
 
-	public Dish(Integer id, String name, String description, double price, String primaryImage, String secondaryImage,
+	public Dish(Integer id, String name, String description, double price,boolean available, String primaryImage, String secondaryImage,
 			Category category) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.price = price;
+		this.available = available;
 		this.primaryImage = primaryImage;
 		this.secondaryImage = secondaryImage;
 		this.category = category;
@@ -89,6 +92,15 @@ public class Dish {
 
 	public void setPrice(double price) {
 		this.price = price;
+	}
+	
+
+	public boolean isAvailable() {
+		return available;
+	}
+
+	public void setAvailable(boolean available) {
+		this.available = available;
 	}
 
 	public String getPrimaryImage() {

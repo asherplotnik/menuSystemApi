@@ -13,6 +13,7 @@ import app.core.entities.Customer;
 import app.core.exceptions.MenuException;
 import app.core.services.LoginService;
 import app.core.util.SignInDetails;
+import app.core.util.UserPayload;
 
 @RestController
 @RequestMapping("/auth")
@@ -22,7 +23,7 @@ public class LoginController {
 	LoginService loginService;
 
 	@PostMapping("/signUp")
-	public String signUp(@RequestBody Customer userDetails) {
+	public UserPayload signUp(@RequestBody Customer userDetails) {
 		try {
 			return loginService.signUp(userDetails);
 		} catch (MenuException e) {
@@ -31,13 +32,12 @@ public class LoginController {
 	}
 	
 	@PostMapping("/signIn")
-	public String signIn(@RequestBody SignInDetails signInDetails) {
+	public UserPayload signIn(@RequestBody SignInDetails signInDetails) {
 		try {
 			return loginService.signIn(signInDetails.email,signInDetails.password);
 		} catch (MenuException e) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,e.getLocalizedMessage());
 		}
-		
 	}
 	
 	@PostMapping("/signOut")

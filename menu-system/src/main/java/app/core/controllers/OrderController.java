@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -47,6 +48,15 @@ public class OrderController {
 		try {
 			return orderService.getMenu();
 		} catch (MenuException e) {
+			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getLocalizedMessage());
+		}
+	}
+	
+	@GetMapping("/getDish/{id}")
+	public Dish getDish(@PathVariable int id) {
+		try {
+			return orderService.getDish(id);
+		} catch (Exception e) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getLocalizedMessage());
 		}
 	}

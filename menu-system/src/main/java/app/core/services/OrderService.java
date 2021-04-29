@@ -37,12 +37,10 @@ public class OrderService {
 	CustomerRepository customerRepository;
 	@Value("${number.of.tables:10}")
 	int numberOfTables;
-	
 
 	public MenuOrder sendNewOrder(String token, OrderPayload orderPayload) throws MenuException {
 		try {
 			int customerId = jwtUtil.extractId(token);
-			
 			Optional<Customer> opt = customerRepository.findById(customerId);
 			if (opt.isEmpty()) {
 				throw new MenuException("Customer not found!!!");
@@ -57,17 +55,17 @@ public class OrderService {
 				}
 			} else {
 				System.out.println(curr.getId());
-				if (curr.getId() < numberOfTables) {
+				if (curr.getId() < numberOfTables && orderPayload.orderType == OrderType.DELIVERY) {
 					throw new MenuException("save order failed - invalid customer id number!!!");
 				}
 			}
 			if (orderPayload.entries == null || orderPayload.entries.isEmpty()) {
 				throw new MenuException("save order failed - order is empty!!!");
 			}
-			MenuOrder newOrder = new  MenuOrder();
+			MenuOrder newOrder = new MenuOrder();
 			newOrder.setCustomer(curr);
 			newOrder.setNote(orderPayload.note);
-			newOrder.setTime(orderPayload.time);
+			newOrder.setTime(LocalDateTime.now());
 			newOrder.setOrderType(orderPayload.orderType);
 			newOrder.setStatus(Status.ORDERED);
 			newOrder = menuOrderRepository.save(newOrder);
@@ -78,11 +76,11 @@ public class OrderService {
 					throw new MenuException("save order failed - invalid dish");
 				}
 				currEntry.setDish(optDish.get());
-				currEntry.setQuantity(entry.qty);
+				currEntry.setQuantity(entry.quantity);
 				currEntry = menuEntryRepository.save(currEntry);
 				newOrder.addEntry(currEntry);
 			}
-    		return newOrder ;
+			return newOrder;
 		} catch (Exception e) {
 			throw new MenuException("save order failed - " + e.getLocalizedMessage());
 		}
@@ -90,36 +88,48 @@ public class OrderService {
 
 	public MenuOrder updateOrderStatus(int orderId, Status status) throws MenuException {
 		try {
-			Optional<MenuOrder> opt = menuOrderRepository.findById(orderId); 
+			Optional<MenuOrder> opt = menuOrderRepository.findById(orderId);
 			if (opt.isEmpty()) {
 				throw new MenuException("update status order failed - Not found!!!");
 			}
-			boolean flag=true;
-			for(MenuEntry entry : opt.get().getEntries()) {
-				if(entry.getReady()==null) {
-					flag=false;
+			boolean flag = true;
+			for (MenuEntry entry : opt.get().getEntries()) {
+				if (entry.getReady() == null) {
+					flag = false;
 					break;
 				}
 			}
-			if(flag) {
+			if (flag) {
 				opt.get().setStatus(status);
 				return opt.get();
 			} else {
 				throw new MenuException("update status order failed - ORDER NOT READY!!!");
 			}
 		} catch (Exception e) {
-			throw new MenuException("update status order failed - "+ e.getLocalizedMessage());
+			throw new MenuException("update status order failed - " + e.getLocalizedMessage());
 		}
 	}
-		
-	public List<Dish> getMenu() throws MenuException{
+
+	public List<Dish> getMenu() throws MenuException {
 		try {
 			return dishRepository.findAll();
 		} catch (Exception e) {
-			throw new MenuException("update status order failed - "+ e.getLocalizedMessage());
+			throw new MenuException("update status order failed - " + e.getLocalizedMessage());
 		}
 	}
-	
+
+	public Dish getDish(int id) throws MenuException {
+		try {
+			Optional<Dish> opt = dishRepository.findById(id);
+			if (opt.isEmpty()) {
+				throw new MenuException("failed to get Dish - not found");
+			}
+			return opt.get();
+		} catch (Exception e) {
+			throw new MenuException("failed to get Dish" + e.getLocalizedMessage());
+		}
+	}
+
 	public List<MenuOrder> getOrdersByStatus(Status status) throws MenuException {
 		try {
 			return menuOrderRepository.findByStatus(status);
@@ -127,20 +137,20 @@ public class OrderService {
 			throw new MenuException(e.getLocalizedMessage());
 		}
 	}
- 
-	public LocalDateTime updateEntryStatus(int entryId) throws MenuException{
+
+	public LocalDateTime updateEntryStatus(int entryId) throws MenuException {
 		try {
 			Optional<MenuEntry> opt = menuEntryRepository.findById(entryId);
 			if (opt.isEmpty()) {
 				throw new MenuException("Update Entry failed !!!");
 			}
 			MenuEntry entry = opt.get();
-			entry.setReady(entry.getReady() == null ? LocalDateTime.now(): null);
+			entry.setReady(entry.getReady() == null ? LocalDateTime.now() : null);
 			return entry.getReady();
 		} catch (Exception e) {
 			throw new MenuException(e.getLocalizedMessage());
 		}
-		
+
 	}
-	
+
 }
