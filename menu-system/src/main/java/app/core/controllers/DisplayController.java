@@ -35,7 +35,7 @@ public class DisplayController {
 				throw new MenuException("You are not logged in !!!");
 			}
 			if(!jwtUtil.extractUserType(token).equals(level.toString()) 
-					&& !jwtUtil.extractUserType(token).equals(Level.ADMIN.toString())) {
+				&& !jwtUtil.extractUserType(token).equals(Level.ADMIN.toString())) {
 				throw new MenuException("You are not Authorized !!!");
 			}
 			return orderService;

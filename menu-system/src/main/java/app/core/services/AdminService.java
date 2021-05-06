@@ -50,7 +50,7 @@ public class AdminService {
 	public Dish addDish(DishPayload payload) throws MenuException {
 		try {
 			Dish dish = new Dish();
-			dish.setAvailable(Boolean.parseBoolean(payload.getAvailable()));
+			dish.setAvailable(payload.getAvailable()==null?false:true);
 			dish.setCategory(Category.valueOf(payload.getCategory()));
 			dish.setDescription(payload.getDescription());
 			dish.setPrice(Double.parseDouble(payload.getPrice()));
@@ -70,7 +70,7 @@ public class AdminService {
 				throw new MenuException("Update Dish failed - not dound");
 			}
 			Dish dish = opt.get();
-			dish.setAvailable(Boolean.parseBoolean(payload.getAvailable()));
+			dish.setAvailable(payload.getAvailable()==null?false:true);
 			dish.setCategory(Category.valueOf(payload.getCategory()));
 			dish.setDescription(payload.getDescription());
 			dish.setPrice(Double.parseDouble(payload.getPrice()));
@@ -81,9 +81,18 @@ public class AdminService {
 			imageUrl = uploadImageToImgbb(payload.getImage2());
 			if (imageUrl!= null)
 				dish.setSecondaryImage(imageUrl);
-			return dishRepository.save(dish);
+			return dish;
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new MenuException("Update Dish failed. ");
+		}
+	}
+	
+	public void deleteDish(int id) throws MenuException {
+		try {
+			dishRepository.deleteById(id);
+		} catch (Exception e) {
+			throw new MenuException("Delete Failed");
 		}
 	}
 

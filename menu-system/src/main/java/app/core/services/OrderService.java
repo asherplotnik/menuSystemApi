@@ -50,7 +50,7 @@ public class OrderService {
 				throw new MenuException("invalid order type!!!");
 			}
 			if (orderPayload.orderType == OrderType.TABLE) {
-				if (curr.getId() >= numberOfTables) {
+				if (curr.getId() > numberOfTables + 2) {
 					throw new MenuException("save order failed - invalid table number!!!");
 				}
 			} else {
