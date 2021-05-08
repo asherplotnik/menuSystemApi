@@ -101,6 +101,23 @@ public class OrderService {
 			}
 			if (flag) {
 				opt.get().setStatus(status);
+				switch (status) {
+				case READY:
+					opt.get().setTimeReady(LocalDateTime.now());
+					break;
+				case SERVED:
+					opt.get().setTimeServed(LocalDateTime.now());
+					break;
+				case PAID:
+				case CANCELED:
+				case RETURNED:
+					opt.get().setTimePaid(LocalDateTime.now());
+					break;
+				case ORDERED:
+					opt.get().setTime(LocalDateTime.now());
+					break;
+				default:
+				}
 				return opt.get();
 			} else {
 				throw new MenuException("update status order failed - ORDER NOT READY!!!");

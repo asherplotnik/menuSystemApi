@@ -23,6 +23,9 @@ public class MenuOrder {
 	@ManyToOne
 	private Customer customer;
 	private LocalDateTime time;
+	private LocalDateTime timeReady;
+	private LocalDateTime timeServed;
+	private LocalDateTime timePaid;
 	private String note;
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "menuOrder")
 	private List<MenuEntry> entries = new ArrayList<>();
@@ -31,6 +34,7 @@ public class MenuOrder {
 	public MenuOrder() {
 	}
 
+	
 	public MenuOrder(OrderType orderType, Customer customer, LocalDateTime time, String note) {
 		this.orderType = orderType;
 		this.customer = customer;
@@ -120,6 +124,37 @@ public class MenuOrder {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
+	
+
+	public LocalDateTime getTimeReady() {
+		return timeReady;
+	}
+
+
+	public void setTimeReady(LocalDateTime timeReady) {
+		this.timeReady = timeReady;
+	}
+
+
+	public LocalDateTime getTimeServed() {
+		return timeServed;
+	}
+
+
+	public void setTimeServed(LocalDateTime timeServed) {
+		this.timeServed = timeServed;
+	}
+
+
+	public LocalDateTime getTimePaid() {
+		return timePaid;
+	}
+
+
+	public void setTimePaid(LocalDateTime timePaid) {
+		this.timePaid = timePaid;
+	}
+
 
 	@Override
 	public int hashCode() {

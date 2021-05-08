@@ -25,17 +25,17 @@ import app.core.services.OrderService;
 @CrossOrigin
 public class DisplayController {
 	@Autowired
-	OrderService orderService;	
+	OrderService orderService;
 	@Autowired
 	JwtUtil jwtUtil;
-	
+
 	private OrderService getService(String token, Level level) throws MenuException {
 		try {
 			if (jwtUtil.isTokenExpired(token)) {
 				throw new MenuException("You are not logged in !!!");
 			}
-			if(!jwtUtil.extractUserType(token).equals(level.toString()) 
-				&& !jwtUtil.extractUserType(token).equals(Level.ADMIN.toString())) {
+			if (!jwtUtil.extractUserType(token).equals(level.toString())
+					&& !jwtUtil.extractUserType(token).equals(Level.ADMIN.toString())) {
 				throw new MenuException("You are not Authorized !!!");
 			}
 			return orderService;
@@ -43,46 +43,45 @@ public class DisplayController {
 			throw new MenuException(e.getLocalizedMessage());
 		}
 	}
-	
-	@GetMapping("/getOpenOrders")
-	public List<MenuOrder> getOpenOrders(@RequestHeader String token) {
+
+	@GetMapping("/getOrdersByStatus/{status}")
+	public List<MenuOrder> getReadyOrders(@RequestHeader String token, @PathVariable String status) {
 		try {
-			return getService(token,Level.KITCHEN).getOrdersByStatus(Status.ORDERED);
+			Status stat = Status.valueOf(status);
+			switch (stat) {
+				case ORDERED:
+					return getService(token, Level.KITCHEN).getOrdersByStatus(stat);
+				case READY:
+				case SERVED:
+					return getService(token, Level.SERVICE).getOrdersByStatus(stat);
+				case PAID:
+					return getService(token,Level.SERVICE).getOrdersByStatus(stat);
+				default:
+					throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "STATUS INVALID!!!");
+			}
 		} catch (MenuException e) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getLocalizedMessage());
 		}
 	}
-	
-	
+
 	@PostMapping("/updateEntryStatus/{entryId}")
 	public LocalDateTime updateOrderEntry(@RequestHeader String token, @PathVariable int entryId) {
 		try {
-			return getService(token,Level.KITCHEN).updateEntryStatus(entryId);
+			return getService(token, Level.KITCHEN).updateEntryStatus(entryId);
 		} catch (MenuException e) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getLocalizedMessage());
 		}
 	}
-	
-	@PostMapping("/updateOrderReady/{orderId}")
-	public MenuOrder updateOrderReady(@RequestHeader String token, @PathVariable int orderId) {
+
+	@PostMapping("/updateOrderStatus/{orderId}/{status}")
+	public MenuOrder updateOrderReady(@RequestHeader String token, @PathVariable int orderId,
+			@PathVariable String status) {
 		try {
-			return getService(token,Level.KITCHEN).updateOrderStatus(orderId, Status.READY);
+			Status stat = Status.valueOf(status);
+			return getService(token, Level.KITCHEN).updateOrderStatus(orderId, stat);
 		} catch (MenuException e) {
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getLocalizedMessage());
 		}
 	}
-	
-	
-	@GetMapping("/getReadyOrders")
-	public List<MenuOrder> getReadyOrders(@RequestHeader String token) {
-		try {
-			return getService(token,Level.SERVICE).getOrdersByStatus(Status.READY);
-		} catch (MenuException e) {
-			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getLocalizedMessage());
-		}
-	}
-	
-		
-	
 
 }
