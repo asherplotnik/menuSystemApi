@@ -61,7 +61,7 @@ public class JwtUtil {
 	
 	private String createToken(Map<String, Object> claims, String subject, String password, Level level, int id) {
 		return  Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
-				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 *30))
+				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 *15))
 				.claim("Password", password)
 				.claim("Level", level.toString())
 				.claim("UserId", id)

@@ -31,7 +31,8 @@ public class Dish {
 	@JsonIgnore
 	@OneToMany(mappedBy="dish",cascade = CascadeType.ALL)
 	private List<MenuEntry> entries;
-
+	
+	
 	public Dish() {
 	}
 	
@@ -137,6 +138,11 @@ public class Dish {
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
+	}
+	
+	
+	public void setEntries(List<MenuEntry> entries) {
+		this.entries = entries;
 	}
 
 	@Override

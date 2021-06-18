@@ -2,6 +2,7 @@ package app.core.util;
 
 import java.util.List;
 
+import app.core.entities.Branch;
 import app.core.enums.OrderType;
 
 public class OrderPayload {

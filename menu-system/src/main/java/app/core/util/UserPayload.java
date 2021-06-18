@@ -8,6 +8,7 @@ public class UserPayload {
 	private String address;
 	private String phone;
 	private Level level;
+	private int affiliation;
 	private String email;
 	private String token;
 		
@@ -16,7 +17,7 @@ public class UserPayload {
 
 	
 	
-	public UserPayload(Integer id, String name, String address, String phone, Level level, String email, String token) {
+	public UserPayload(Integer id, String name, String address, String phone, Level level,int affiliation, String email, String token) {
 		this.id = id;
 		this.name = name;
 		this.address = address;
@@ -24,6 +25,7 @@ public class UserPayload {
 		this.level = level;
 		this.email = email;
 		this.token = token;
+		this.affiliation = affiliation;
 	}
 
 
@@ -83,6 +85,19 @@ public class UserPayload {
 	public void setToken(String token) {
 		this.token = token;
 	}
+
+
+
+	public int getAffiliation() {
+		return affiliation;
+	}
+
+
+
+	public void setAffiliation(int affiliation) {
+		this.affiliation = affiliation;
+	}
+	
 	
 	
 }

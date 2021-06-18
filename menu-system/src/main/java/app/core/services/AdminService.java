@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import app.core.entities.Dish;
 import app.core.enums.Category;
 import app.core.exceptions.MenuException;
-import app.core.repositories.CustomerRepository;
+import app.core.repositories.UserRepository;
 import app.core.repositories.DishRepository;
 import app.core.repositories.MenuEntryRepository;
 import app.core.repositories.MenuOrderRepository;
@@ -40,7 +40,7 @@ public class AdminService {
 	@Autowired
 	DishRepository dishRepository;
 	@Autowired
-	CustomerRepository customerRepository;
+	UserRepository userRepository;
 	@Value("${number.of.tables:10}")
 	int numberOfTables;
 	@Value("${imgbb.api.key}")

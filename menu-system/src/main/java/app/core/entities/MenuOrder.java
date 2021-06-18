@@ -21,7 +21,7 @@ public class MenuOrder {
 	private Integer id;
 	private OrderType orderType;
 	@ManyToOne
-	private Customer customer;
+	private User user;
 	private LocalDateTime time;
 	private LocalDateTime timeReady;
 	private LocalDateTime timeServed;
@@ -30,23 +30,25 @@ public class MenuOrder {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "menuOrder")
 	private List<MenuEntry> entries = new ArrayList<>();
 	private Status status; 
+	@ManyToOne
+	private Branch branch;
 	
 	public MenuOrder() {
 	}
 
 	
-	public MenuOrder(OrderType orderType, Customer customer, LocalDateTime time, String note) {
+	public MenuOrder(OrderType orderType, User user, LocalDateTime time, String note) {
 		this.orderType = orderType;
-		this.customer = customer;
+		this.user = user;
 		this.time = time;
 		this.note = note;
 	}
 
-	public MenuOrder(Integer id, OrderType orderType, Customer customer, LocalDateTime time, String note,
+	public MenuOrder(Integer id, OrderType orderType, User user, LocalDateTime time, String note,
 			Status status) {
 		this.id = id;
 		this.orderType = orderType;
-		this.customer = customer;
+		this.user = user;
 		this.time = time;
 		this.note = note;
 		this.status = status;
@@ -54,10 +56,10 @@ public class MenuOrder {
 	
 	
 
-	public MenuOrder(OrderType orderType, Customer customer, LocalDateTime time, String note, List<MenuEntry> entries,
+	public MenuOrder(OrderType orderType, User user, LocalDateTime time, String note, List<MenuEntry> entries,
 			Status status) {
 		this.orderType = orderType;
-		this.customer = customer;
+		this.user = user;
 		this.time = time;
 		this.note = note;
 		this.entries = entries;
@@ -78,14 +80,6 @@ public class MenuOrder {
 
 	public void setOrderType(OrderType orderType) {
 		this.orderType = orderType;
-	}
-
-	public Customer getCustomer() {
-		return customer;
-	}
-
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
 	}
 
 	public LocalDateTime getTime() {
@@ -156,6 +150,26 @@ public class MenuOrder {
 	}
 
 
+	public User getUser() {
+		return user;
+	}
+
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+
+	public Branch getBranch() {
+		return branch;
+	}
+
+
+	public void setBranch(Branch branch) {
+		this.branch = branch;
+	}
+
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -183,7 +197,7 @@ public class MenuOrder {
 
 	@Override
 	public String toString() {
-		return "MenuOrder [id=" + id + ", orderType=" + orderType + ", customer=" + customer + ", time=" + time
+		return "MenuOrder [id=" + id + ", orderType=" + orderType + ", user=" + user + ", time=" + time
 				+ ", note=" + note + ", status=" + status + ", entries=" + entries + "]";
 	}
 	

@@ -16,7 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import app.core.enums.Level;
 
 @Entity
-public class Customer {
+public class User {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,21 +25,22 @@ public class Customer {
 	private String address;
 	private String phone;
 	private Level level;
+	private int affiliation;
 	private String salt;
 	@Column(unique = true)
 	private String email;
 	private String password;
 	@JsonIgnore
-	@OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<MenuOrder> orders;
-	public Customer() {
+	public User() {
 	}
 	
-	public Customer(int id) {
+	public User(int id) {
 		this.id = id;
 	}
 	
-	public Customer(String name, String address, String phone, Level level, String email, String password) {
+	public User(String name, String address, String phone, Level level, String email, String password) {
 		this.name = name;
 		this.address = address;
 		this.phone = phone;
@@ -48,7 +49,7 @@ public class Customer {
 		this.password = password;
 	}
 
-	public Customer(Integer id, String name, String address, String phone, Level level, String email,
+	public User(Integer id, String name, String address, String phone, Level level, String email,
 			String password) {
 		this.id = id;
 		this.name = name;
@@ -138,6 +139,15 @@ public class Customer {
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
+	
+	
+	public int getAffiliation() {
+		return affiliation;
+	}
+
+	public void setAffiliation(int id) {
+		this.affiliation = id;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -147,7 +157,7 @@ public class Customer {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Customer other = (Customer) obj;
+		User other = (User) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -158,10 +168,11 @@ public class Customer {
 
 	@Override
 	public String toString() {
-		return "Customer [id=" + id + ", name=" + name + ", address=" + address + ", phone=" + phone + ", level="
-				+ level + ", email=" + email + "]";
+		return "User [id=" + id + ", name=" + name + ", address=" + address + ", phone=" + phone + ", level=" + level
+				+ ", affiliation=" + affiliation + ", email=" + email + "]";
 	}
 
+	
 	
 	
 }

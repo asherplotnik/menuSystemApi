@@ -5,27 +5,36 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import app.core.entities.Customer;
+
+import app.core.entities.Branch;
+import app.core.entities.User;
 import app.core.entities.Dish;
 import app.core.enums.Category;
 import app.core.enums.Level;
-import app.core.repositories.CustomerRepository;
+import app.core.repositories.BranchRepository;
+import app.core.repositories.UserRepository;
 import app.core.repositories.DishRepository;
 import app.core.security.PasswordUtils;
 
 @Service
 @Transactional
 public class CreateDatabaseService {
+	
+	@Autowired
+	BranchRepository branchRepository;
+	
 	@Autowired
 	DishRepository dishRepository;
 	
 	@Autowired
-	CustomerRepository customerRepository;
+	UserRepository userRepository;
 	
 	@Value("${number.of.tables:10}")
 	int numberOfTables;
 	
 	public void createDatabase() {
+		Branch branch = new Branch("Main branch", "Main street 1");
+		branchRepository.save(branch);
 		Dish dish = new Dish();
 		dish.setCategory(Category.DRINK);
 		dish.setDescription("Mineral water bottle");
@@ -98,41 +107,44 @@ public class CreateDatabaseService {
 		dish.setPrimaryImage("https://i.ibb.co/BTY6gs6/bread2.jpg");
 		dish.setSecondaryImage("https://i.ibb.co/BTY6gs6/bread2.jpg");
 		dishRepository.save(dish);
-		Customer customer = null;
+		User user = null;
 		
 		for (int i = 1; i <=  numberOfTables;i++) {
-			customer = new Customer();
-			customer.setName("table"+i);
-	    	customer.setLevel(Level.CUSTOMER);
-	    	customer.setEmail(i+"@"+i+".com");
-	    	customer.setSalt(PasswordUtils.getSalt(30));
+			user = new User();
+			user.setName("table"+i);
+	    	user.setLevel(Level.TABLE);
+	    	user.setEmail(i+"@"+i+".com");
+	    	user.setSalt(PasswordUtils.getSalt(30));
 	    	String pass = Integer.toString(i)+Integer.toString(i)+Integer.toString(i);
-	    	customer.setPassword(PasswordUtils.generateSecurePassword(pass, customer.getSalt()));
-	    	customerRepository.save(customer);
+	    	user.setPassword(PasswordUtils.generateSecurePassword(pass, user.getSalt()));
+	    	user.setAffiliation(1);
+	    	userRepository.save(user);
 
 		}
 
-    	customer = new Customer();
-    	customer.setName("kitchen");
-    	customer.setLevel(Level.KITCHEN);
-    	customer.setEmail("11@11.com");
-    	customer.setSalt(PasswordUtils.getSalt(30));
-    	customer.setPassword(PasswordUtils.generateSecurePassword("111111", customer.getSalt()));
-    	customerRepository.save(customer);		
-    	customer = new Customer();
-    	customer.setName("admin");
-    	customer.setLevel(Level.ADMIN);
-    	customer.setEmail("12@12.com");
-    	customer.setSalt(PasswordUtils.getSalt(30));
-    	customer.setPassword(PasswordUtils.generateSecurePassword("111111", customer.getSalt()));
-    	customerRepository.save(customer);		
-    	customer = new Customer();
-    	customer.setName("service");
-    	customer.setLevel(Level.SERVICE);
-    	customer.setEmail("13@13.com");
-    	customer.setSalt(PasswordUtils.getSalt(30));
-    	customer.setPassword(PasswordUtils.generateSecurePassword("111111", customer.getSalt()));
-    	customerRepository.save(customer);		
+    	user = new User();
+    	user.setName("kitchen");
+    	user.setLevel(Level.KITCHEN);
+    	user.setEmail("11@11.com");
+    	user.setSalt(PasswordUtils.getSalt(30));
+    	user.setPassword(PasswordUtils.generateSecurePassword("111111", user.getSalt()));
+    	user.setAffiliation(1);
+    	userRepository.save(user);		
+    	user = new User();
+    	user.setName("admin");
+    	user.setLevel(Level.ADMIN);
+    	user.setEmail("12@12.com");
+    	user.setSalt(PasswordUtils.getSalt(30));
+    	user.setPassword(PasswordUtils.generateSecurePassword("111111", user.getSalt()));
+    	userRepository.save(user);		
+    	user = new User();
+    	user.setName("service");
+    	user.setLevel(Level.SERVICE);
+    	user.setEmail("13@13.com");
+    	user.setSalt(PasswordUtils.getSalt(30));
+    	user.setPassword(PasswordUtils.generateSecurePassword("111111", user.getSalt()));
+    	user.setAffiliation(1);
+    	userRepository.save(user);		
 		
 	}
 

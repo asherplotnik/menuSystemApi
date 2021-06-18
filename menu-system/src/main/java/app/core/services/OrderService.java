@@ -7,14 +7,16 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import app.core.entities.Customer;
+import app.core.entities.User;
+import app.core.entities.Branch;
 import app.core.entities.Dish;
 import app.core.entities.MenuEntry;
 import app.core.entities.MenuOrder;
 import app.core.enums.OrderType;
 import app.core.enums.Status;
 import app.core.exceptions.MenuException;
-import app.core.repositories.CustomerRepository;
+import app.core.repositories.UserRepository;
+import app.core.repositories.BranchRepository;
 import app.core.repositories.DishRepository;
 import app.core.repositories.MenuEntryRepository;
 import app.core.repositories.MenuOrderRepository;
@@ -34,18 +36,20 @@ public class OrderService {
 	@Autowired
 	DishRepository dishRepository;
 	@Autowired
-	CustomerRepository customerRepository;
+	UserRepository userRepository;
+	@Autowired
+	BranchRepository branchRepository;
 	@Value("${number.of.tables:10}")
 	int numberOfTables;
 
 	public MenuOrder sendNewOrder(String token, OrderPayload orderPayload) throws MenuException {
 		try {
 			int customerId = jwtUtil.extractId(token);
-			Optional<Customer> opt = customerRepository.findById(customerId);
+			Optional<User> opt = userRepository.findById(customerId);
 			if (opt.isEmpty()) {
 				throw new MenuException("Customer not found!!!");
 			}
-			Customer curr = opt.get();
+			User curr = opt.get();
 			if (orderPayload.orderType == null) {
 				throw new MenuException("invalid order type!!!");
 			}
@@ -63,11 +67,16 @@ public class OrderService {
 				throw new MenuException("save order failed - order is empty!!!");
 			}
 			MenuOrder newOrder = new MenuOrder();
-			newOrder.setCustomer(curr);
+			newOrder.setUser(curr);
 			newOrder.setNote(orderPayload.note);
 			newOrder.setTime(LocalDateTime.now());
 			newOrder.setOrderType(orderPayload.orderType);
 			newOrder.setStatus(Status.ORDERED);
+			Optional<Branch> optBranch = branchRepository.findById(curr.getAffiliation());
+			if(optBranch.isEmpty()) {
+				throw new MenuException("save order failed - Branch mismatch!!!");
+			}
+			newOrder.setBranch(optBranch.get());
 			newOrder = menuOrderRepository.save(newOrder);
 			for (EntryObj entry : orderPayload.entries) {
 				MenuEntry currEntry = new MenuEntry();
@@ -147,9 +156,19 @@ public class OrderService {
 		}
 	}
 
-	public List<MenuOrder> getOrdersByStatus(Status status) throws MenuException {
+	public List<MenuOrder> getOrdersByStatus(Status status, String token) throws MenuException {
+		int customerId = jwtUtil.extractId(token);
+		Optional<User> opt = userRepository.findById(customerId);
+		if (opt.isEmpty()) {
+			throw new MenuException("Customer not found!!!");
+		}
+		User curr = opt.get();
+		Optional<Branch> branch = branchRepository.findById(curr.getAffiliation());
+		if (branch.isEmpty()) {
+			throw new MenuException("Branch missmatch !!!");
+		}
 		try {
-			return menuOrderRepository.findByStatus(status);
+			return menuOrderRepository.findByStatusAndBranch(status,branch.get());
 		} catch (Exception e) {
 			throw new MenuException(e.getLocalizedMessage());
 		}

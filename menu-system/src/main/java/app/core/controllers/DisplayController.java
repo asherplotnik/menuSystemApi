@@ -50,12 +50,12 @@ public class DisplayController {
 			Status stat = Status.valueOf(status);
 			switch (stat) {
 				case ORDERED:
-					return getService(token, Level.KITCHEN).getOrdersByStatus(stat);
+					return getService(token, Level.KITCHEN).getOrdersByStatus(stat,token);
 				case READY:
 				case SERVED:
-					return getService(token, Level.SERVICE).getOrdersByStatus(stat);
+					return getService(token, Level.SERVICE).getOrdersByStatus(stat,token);
 				case PAID:
-					return getService(token,Level.SERVICE).getOrdersByStatus(stat);
+					return getService(token,Level.SERVICE).getOrdersByStatus(stat,token);
 				default:
 					throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "STATUS INVALID!!!");
 			}

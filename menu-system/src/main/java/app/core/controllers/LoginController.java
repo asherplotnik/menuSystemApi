@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import app.core.entities.Customer;
+import app.core.entities.User;
 import app.core.exceptions.MenuException;
 import app.core.services.LoginService;
 import app.core.util.SignInDetails;
@@ -23,7 +23,7 @@ public class LoginController {
 	LoginService loginService;
 
 	@PostMapping("/signUp")
-	public UserPayload signUp(@RequestBody Customer userDetails) {
+	public UserPayload signUp(@RequestBody User userDetails) {
 		try {
 			return loginService.signUp(userDetails);
 		} catch (MenuException e) {
@@ -36,6 +36,7 @@ public class LoginController {
 		try {
 			return loginService.signIn(signInDetails.email,signInDetails.password);
 		} catch (MenuException e) {
+			e.printStackTrace();
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,e.getLocalizedMessage());
 		}
 	}

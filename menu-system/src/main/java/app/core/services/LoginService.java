@@ -4,9 +4,9 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import app.core.entities.Customer;
+import app.core.entities.User;
 import app.core.exceptions.MenuException;
-import app.core.repositories.CustomerRepository;
+import app.core.repositories.UserRepository;
 import app.core.security.JwtUtil;
 import app.core.security.PasswordUtils;
 import app.core.util.UserPayload;
@@ -15,7 +15,7 @@ import app.core.util.UserPayload;
 @Transactional
 public class LoginService {
 	@Autowired
-	private CustomerRepository customerRepository;
+	private UserRepository userRepository;
 	@Autowired
 	JwtUtil jwtUtil;
 
@@ -23,14 +23,14 @@ public class LoginService {
 	}
 
 	public boolean isEmailExists(String email) {
-		Customer user = customerRepository.findByEmail(email);
+		User user = userRepository.findByEmail(email);
 		if (user != null)
 			return user.getEmail().equals(email);
 		else
 			return false;
 	}
 
-	public UserPayload signUp(Customer userDetails) throws MenuException {
+	public UserPayload signUp(User userDetails) throws MenuException {
 		try {
 			if (isEmailExists(userDetails.getEmail())) {
 				throw new MenuException("Email exists already!");
@@ -40,11 +40,11 @@ public class LoginService {
 			String securePassword = PasswordUtils.generateSecurePassword(receivedPassword, salt);
 			userDetails.setPassword(securePassword);
 			userDetails.setSalt(salt);
-			Customer customer = customerRepository.save(userDetails);
-			String token = jwtUtil.generateToken(customer.getEmail(), securePassword, customer.getLevel(),
-					customer.getId());
-			UserPayload userPayload = new UserPayload(customer.getId(), customer.getName(), customer.getAddress(),
-					customer.getPhone(), customer.getLevel(), customer.getEmail(), token);
+			User user = userRepository.save(userDetails);
+			String token = jwtUtil.generateToken(user.getEmail(), securePassword, user.getLevel(),
+					user.getId());
+			UserPayload userPayload = new UserPayload(user.getId(), user.getName(), user.getAddress(),
+					user.getPhone(), user.getLevel(),user.getAffiliation(), user.getEmail(), token);
 			return userPayload;
 		} catch (Exception e) {
 			throw new MenuException(e.getLocalizedMessage());
@@ -53,14 +53,14 @@ public class LoginService {
 
 	public UserPayload signIn(String email, String password) throws MenuException {
 		try {
-			Customer user = customerRepository.findByEmail(email);
+			User user = userRepository.findByEmail(email);
 			String securePassword = user.getPassword();
 			String salt = user.getSalt();
 			boolean passwordMatch = PasswordUtils.verifyUserPassword(password, securePassword, salt);
 			if (passwordMatch) {
 				String token = jwtUtil.generateToken(user.getEmail(), securePassword, user.getLevel(), user.getId());
 				UserPayload userPayload = new UserPayload(user.getId(), user.getName(), user.getAddress(),
-						user.getPhone(), user.getLevel(), user.getEmail(), token);
+						user.getPhone(), user.getLevel(), user.getAffiliation(),user.getEmail(), token);
 				return userPayload;
 			} else {
 				throw new MenuException("Login failed!");
