@@ -11,5 +11,6 @@ import app.core.exceptions.MenuException;
 public interface MenuOrderRepository extends JpaRepository<MenuOrder, Integer>{
 	
 	List<MenuOrder> findByStatusAndBranch(Status status, Branch  branch) throws MenuException;
+	List<MenuOrder> findByStatus(Status status) throws MenuException;
 	
 }

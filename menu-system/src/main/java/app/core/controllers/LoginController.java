@@ -36,7 +36,6 @@ public class LoginController {
 		try {
 			return loginService.signIn(signInDetails.email,signInDetails.password);
 		} catch (MenuException e) {
-			e.printStackTrace();
 			throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,e.getLocalizedMessage());
 		}
 	}

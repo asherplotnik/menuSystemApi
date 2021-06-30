@@ -1,5 +1,6 @@
 package app.core.util;
 
+import app.core.entities.Branch;
 import app.core.enums.Level;
 
 public class UserPayload {
@@ -8,7 +9,7 @@ public class UserPayload {
 	private String address;
 	private String phone;
 	private Level level;
-	private int affiliation;
+	private Branch branch;
 	private String email;
 	private String token;
 		
@@ -17,7 +18,7 @@ public class UserPayload {
 
 	
 	
-	public UserPayload(Integer id, String name, String address, String phone, Level level,int affiliation, String email, String token) {
+	public UserPayload(Integer id, String name, String address, String phone, Level level,Branch branch, String email, String token) {
 		this.id = id;
 		this.name = name;
 		this.address = address;
@@ -25,7 +26,7 @@ public class UserPayload {
 		this.level = level;
 		this.email = email;
 		this.token = token;
-		this.affiliation = affiliation;
+		this.branch = branch;
 	}
 
 
@@ -88,16 +89,15 @@ public class UserPayload {
 
 
 
-	public int getAffiliation() {
-		return affiliation;
+	public Branch getBranch() {
+		return branch;
 	}
 
 
 
-	public void setAffiliation(int affiliation) {
-		this.affiliation = affiliation;
+	public void setBranch(Branch branch) {
+		this.branch = branch;
 	}
-	
-	
+
 	
 }

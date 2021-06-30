@@ -9,6 +9,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,7 +26,9 @@ public class User {
 	private String address;
 	private String phone;
 	private Level level;
-	private int affiliation;
+	@ManyToOne
+	@JsonIgnore
+	private Branch branch;
 	private String salt;
 	@Column(unique = true)
 	private String email;
@@ -131,6 +134,16 @@ public class User {
 	public void setOrders(List<MenuOrder> orders) {
 		this.orders = orders;
 	}
+	
+	
+
+	public Branch getBranch() {
+		return branch;
+	}
+
+	public void setBranch(Branch branch) {
+		this.branch = branch;
+	}
 
 	@Override
 	public int hashCode() {
@@ -141,14 +154,6 @@ public class User {
 	}
 	
 	
-	public int getAffiliation() {
-		return affiliation;
-	}
-
-	public void setAffiliation(int id) {
-		this.affiliation = id;
-	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -169,8 +174,10 @@ public class User {
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", name=" + name + ", address=" + address + ", phone=" + phone + ", level=" + level
-				+ ", affiliation=" + affiliation + ", email=" + email + "]";
+				+ " branch=" + branch + ", salt=" + salt + ", email=" + email + "]";
 	}
+
+	
 
 	
 	

@@ -33,8 +33,10 @@ public class CreateDatabaseService {
 	int numberOfTables;
 	
 	public void createDatabase() {
-		Branch branch = new Branch("Main branch", "Main street 1");
-		branchRepository.save(branch);
+		Branch branch1 = new Branch("Main branch", "Main street 1");
+		branchRepository.save(branch1);
+		Branch branch2 = new Branch("Second branch", "Second street 1");
+		branchRepository.save(branch2);
 		Dish dish = new Dish();
 		dish.setCategory(Category.DRINK);
 		dish.setDescription("Mineral water bottle");
@@ -117,9 +119,21 @@ public class CreateDatabaseService {
 	    	user.setSalt(PasswordUtils.getSalt(30));
 	    	String pass = Integer.toString(i)+Integer.toString(i)+Integer.toString(i);
 	    	user.setPassword(PasswordUtils.generateSecurePassword(pass, user.getSalt()));
-	    	user.setAffiliation(1);
-	    	userRepository.save(user);
+	    	branch1.addUser(user);
+	    	//userRepository.save(user);
 
+		}
+		for (int i = 1; i <=  numberOfTables;i++) {
+			user = new User();
+			user.setName("table2"+i);
+			user.setLevel(Level.TABLE);
+			user.setEmail(i+"2@"+i+".com");
+			user.setSalt(PasswordUtils.getSalt(30));
+			String pass = Integer.toString(i)+Integer.toString(i)+Integer.toString(i);
+			user.setPassword(PasswordUtils.generateSecurePassword(pass, user.getSalt()));
+			branch2.addUser(user);
+			//userRepository.save(user);
+			
 		}
 
     	user = new User();
@@ -128,8 +142,15 @@ public class CreateDatabaseService {
     	user.setEmail("11@11.com");
     	user.setSalt(PasswordUtils.getSalt(30));
     	user.setPassword(PasswordUtils.generateSecurePassword("111111", user.getSalt()));
-    	user.setAffiliation(1);
-    	userRepository.save(user);		
+    	branch1.addUser(user);
+    	user = new User();
+    	user.setName("kitchen2");
+    	user.setLevel(Level.KITCHEN);
+    	user.setEmail("112@11.com");
+    	user.setSalt(PasswordUtils.getSalt(30));
+    	user.setPassword(PasswordUtils.generateSecurePassword("111111", user.getSalt()));
+    	branch1.addUser(user);
+    	//userRepository.save(user);
     	user = new User();
     	user.setName("admin");
     	user.setLevel(Level.ADMIN);
@@ -143,8 +164,15 @@ public class CreateDatabaseService {
     	user.setEmail("13@13.com");
     	user.setSalt(PasswordUtils.getSalt(30));
     	user.setPassword(PasswordUtils.generateSecurePassword("111111", user.getSalt()));
-    	user.setAffiliation(1);
-    	userRepository.save(user);		
+    	branch1.addUser(user);
+    	user = new User();
+    	user.setName("service");
+    	user.setLevel(Level.SERVICE);
+    	user.setEmail("132@13.com");
+    	user.setSalt(PasswordUtils.getSalt(30));
+    	user.setPassword(PasswordUtils.generateSecurePassword("111111", user.getSalt()));
+    	branch1.addUser(user);
+    	//userRepository.save(user);		
 		
 	}
 

@@ -1,9 +1,9 @@
 package app.core.services;
 
+import java.util.Optional;
 import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import app.core.entities.User;
 import app.core.exceptions.MenuException;
 import app.core.repositories.UserRepository;
@@ -18,14 +18,13 @@ public class LoginService {
 	private UserRepository userRepository;
 	@Autowired
 	JwtUtil jwtUtil;
-
 	public LoginService() {
 	}
 
 	public boolean isEmailExists(String email) {
-		User user = userRepository.findByEmail(email);
-		if (user != null)
-			return user.getEmail().equals(email);
+		Optional<User> userOpt = userRepository.findByEmail(email);
+		if (userOpt.isPresent())
+			return userOpt.get().getEmail().equals(email);
 		else
 			return false;
 	}
@@ -44,7 +43,7 @@ public class LoginService {
 			String token = jwtUtil.generateToken(user.getEmail(), securePassword, user.getLevel(),
 					user.getId());
 			UserPayload userPayload = new UserPayload(user.getId(), user.getName(), user.getAddress(),
-					user.getPhone(), user.getLevel(),user.getAffiliation(), user.getEmail(), token);
+					user.getPhone(), user.getLevel(),user.getBranch(), user.getEmail(), token);
 			return userPayload;
 		} catch (Exception e) {
 			throw new MenuException(e.getLocalizedMessage());
@@ -53,14 +52,18 @@ public class LoginService {
 
 	public UserPayload signIn(String email, String password) throws MenuException {
 		try {
-			User user = userRepository.findByEmail(email);
+			Optional<User> userOpt = userRepository.findByEmail(email);
+			if(userOpt.isEmpty()) {
+				throw new MenuException("Login failed!");
+			}
+			User user = userOpt.get();
 			String securePassword = user.getPassword();
 			String salt = user.getSalt();
 			boolean passwordMatch = PasswordUtils.verifyUserPassword(password, securePassword, salt);
 			if (passwordMatch) {
 				String token = jwtUtil.generateToken(user.getEmail(), securePassword, user.getLevel(), user.getId());
 				UserPayload userPayload = new UserPayload(user.getId(), user.getName(), user.getAddress(),
-						user.getPhone(), user.getLevel(), user.getAffiliation(),user.getEmail(), token);
+						user.getPhone(), user.getLevel(), user.getBranch(),user.getEmail(), token);
 				return userPayload;
 			} else {
 				throw new MenuException("Login failed!");

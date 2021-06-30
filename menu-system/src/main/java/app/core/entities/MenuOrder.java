@@ -10,6 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import app.core.enums.OrderType;
 import app.core.enums.Status;
 
@@ -30,6 +33,7 @@ public class MenuOrder {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "menuOrder")
 	private List<MenuEntry> entries = new ArrayList<>();
 	private Status status; 
+	@JsonIgnoreProperties({"users","orders"})
 	@ManyToOne
 	private Branch branch;
 	

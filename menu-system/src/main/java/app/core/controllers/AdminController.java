@@ -32,6 +32,7 @@ public class AdminController {
 
 	private AdminService getAdmin(String token) throws MenuException {
 		if (jwtUtil.isTokenExpired(token)) {
+			
 			throw new MenuException("You are not authorized");
 		}
 		return adminService;

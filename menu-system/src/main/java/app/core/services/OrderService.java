@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import app.core.entities.User;
-import app.core.entities.Branch;
 import app.core.entities.Dish;
 import app.core.entities.MenuEntry;
 import app.core.entities.MenuOrder;
@@ -72,11 +71,7 @@ public class OrderService {
 			newOrder.setTime(LocalDateTime.now());
 			newOrder.setOrderType(orderPayload.orderType);
 			newOrder.setStatus(Status.ORDERED);
-			Optional<Branch> optBranch = branchRepository.findById(curr.getAffiliation());
-			if(optBranch.isEmpty()) {
-				throw new MenuException("save order failed - Branch mismatch!!!");
-			}
-			newOrder.setBranch(optBranch.get());
+			newOrder.setBranch(curr.getBranch());
 			newOrder = menuOrderRepository.save(newOrder);
 			for (EntryObj entry : orderPayload.entries) {
 				MenuEntry currEntry = new MenuEntry();
@@ -163,14 +158,18 @@ public class OrderService {
 			throw new MenuException("Customer not found!!!");
 		}
 		User curr = opt.get();
-		Optional<Branch> branch = branchRepository.findById(curr.getAffiliation());
-		if (branch.isEmpty()) {
-			throw new MenuException("Branch missmatch !!!");
-		}
-		try {
-			return menuOrderRepository.findByStatusAndBranch(status,branch.get());
-		} catch (Exception e) {
-			throw new MenuException(e.getLocalizedMessage());
+		if (!jwtUtil.extractUserType(token).equals("ADMIN")) {
+			try {
+				return menuOrderRepository.findByStatusAndBranch(status,curr.getBranch());
+			} catch (Exception e) {
+				throw new MenuException(e.getLocalizedMessage());
+			}
+		}else {
+			try {
+				return menuOrderRepository.findByStatus(status);
+			} catch (Exception e) {
+				throw new MenuException(e.getLocalizedMessage());
+			}
 		}
 	}
 
