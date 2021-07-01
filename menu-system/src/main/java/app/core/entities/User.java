@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import app.core.enums.Level;
 
@@ -27,7 +28,7 @@ public class User {
 	private String phone;
 	private Level level;
 	@ManyToOne
-	@JsonIgnore
+	@JsonIgnoreProperties({"users","orders"})
 	private Branch branch;
 	private String salt;
 	@Column(unique = true)
