@@ -191,17 +191,19 @@ public class AdminService {
 	
 	public User addUser(User user) throws MenuException {
 		try {
-			Optional<Branch> branch = branchRepository.findById(user.getBranch().getId());
-			if (branch.isEmpty()) {
-				throw new MenuException("Add user failed - invalid branch");
+			if (user.getLevel() == Level.ADMIN) {
+				user.setBranch(null);
+			} else {
+				Optional<Branch> branch = branchRepository.findById(user.getBranch().getId());
+				if (branch.isEmpty()) {
+					throw new MenuException("Update user failed - invalid branch");
+				}
+				user.setBranch(branch.get());
 			}
-			user.setBranch(branch.get());
+		
 			if (user.getLevel() != Level.CUSTOMER) {
 				user.setAddress(null);
 				user.setPhone(null);
-				if (user.getLevel() != Level.ADMIN) {
-					user.setBranch(null);
-				}
 			}
 			user.setSalt(PasswordUtils.getSalt(30));
 			String pass = user.getPassword();
@@ -215,14 +217,18 @@ public class AdminService {
 		try {
 			Optional<User> userOpt = userRepository.findById(user.getId());
 			if (userOpt.isEmpty()) {
-				throw new MenuException("Add user failed - invalid user Id");
+				throw new MenuException("Update user failed - invalid user Id");
 			}
 			User newUser = userOpt.get();
-			Optional<Branch> branch = branchRepository.findById(user.getBranch().getId());
-			if (branch.isEmpty()) {
-				throw new MenuException("Add user failed - invalid branch");
+			if (user.getLevel() == Level.ADMIN) {
+				newUser.setBranch(null);
+			} else {
+				Optional<Branch> branch = branchRepository.findById(user.getBranch().getId());
+				if (branch.isEmpty()) {
+					throw new MenuException("Update user failed - invalid branch");
+				}
+				newUser.setBranch(branch.get());
 			}
-			newUser.setBranch(branch.get());
 			newUser.setAddress(user.getAddress());
 			newUser.setPhone(user.getPhone());
 			newUser.setEmail(user.getEmail());
@@ -231,9 +237,6 @@ public class AdminService {
 			if (newUser.getLevel() != Level.CUSTOMER) {
 				newUser.setAddress(null);
 				newUser.setPhone(null);
-				if (newUser.getLevel() != Level.ADMIN) {
-					newUser.setBranch(null);
-				}
 			}
 			String pass = user.getPassword();
 			newUser.setPassword(PasswordUtils.generateSecurePassword(pass, newUser.getSalt()));

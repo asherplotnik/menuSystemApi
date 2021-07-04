@@ -97,7 +97,11 @@ public class AdminController {
 	public User addUser(@RequestHeader String token, @RequestBody User user, @PathVariable int branchId) {
 		Branch branch = new Branch();
 		branch.setId(branchId);
-		user.setBranch(branch);
+		if(branchId == -1) {
+			user.setBranch(null);
+		} else {
+			user.setBranch(branch);
+		}
 		try {
 			return getAdmin(token).addUser(user);
 		} catch (Exception e) {
